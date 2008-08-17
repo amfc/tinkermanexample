@@ -1,5 +1,4 @@
-var Application = new function()
-{
+function Application() {
     this.lastRecordsCount = 0;
     this.maxLastRecords = 3;
     this.lastViewedItems = [];
@@ -65,7 +64,7 @@ var Application = new function()
         if (this.parameters.movie) {
             Application.searchForMovies({id: this.parameters.movie, getCinemas: 1, getBriefInfo: 1});
         } else if (this.parameters.cinema) {
-            Application.searchForCinemas(this.parameters.cinema);
+            app.searchForCinemas(this.parameters.cinema);
         }
         DOM_PreventDefault(event);
     }
@@ -346,21 +345,21 @@ var Application = new function()
         }
         this.query('search-cinemas', queryParameters, this.showCinemas);
     }
-    
-    
 }
 
-Application.start();
+app = new Application;
+
+app.start();
 
 Navigation.updatePage = function(parametersObj)
 {
-    Application.parameters = parametersObj;
+    app.parameters = parametersObj;
     
     if (parametersObj['movie']) {
-        Application.openMovie(parametersObj['movie']);
+        app.openMovie(parametersObj['movie']);
     } else if (parametersObj['cinema']) {
-        Application.openCinema(parametersObj['cinema']);
+        app.openCinema(parametersObj['cinema']);
     } else {
-        Application.closeWindow();
+        app.closeWindow();
     }
 }
