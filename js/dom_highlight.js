@@ -92,7 +92,7 @@ function DMH_EscapeForRegexp(str)
 // It return an an unaccented version of an accented character
 function DMH_ReplaceSpecialChar(chr)
 {
-    var special_chars = 'áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜñÑ';
+    var special_chars = 'Ã¡Ã©Ã­Ã³ÃºÃ Ã¨Ã¬Ã²Ã¹Ã¢ÃªÃ®Ã´Ã»Ã¤Ã«Ã¯Ã¶Ã¼ÃÃ‰ÃÃ“ÃšÃ€ÃˆÃŒÃ’Ã™Ã‚ÃŠÃŽÃ”Ã›Ã„Ã‹ÃÃ–ÃœÃ±Ã‘';
     var replace_chars = 'aeiouaeiouaeiouaeiuoAEIOUAEIOUAEIOUAEIOUnN';
     var pos = special_chars.indexOf(chr);
     if (pos >= 0) {
@@ -105,5 +105,5 @@ function DMH_ReplaceSpecialChar(chr)
 // It replaces any accented character from the string with an unaccented version
 function DMH_ReplaceSpecialChars(str)
 {
-    return str.replace(/á|é|í|ó|ú|à|è|ì|ò|ù|â|ê|î|ô|û|ä|ë|ï|ö|ü|ñ/ig, DMH_ReplaceSpecialChar);
+    return str.replace(/Ã¡|Ã©|Ã­|Ã³|Ãº|Ã |Ã¨|Ã¬|Ã²|Ã¹|Ã¢|Ãª|Ã®|Ã´|Ã»|Ã¤|Ã«|Ã¯|Ã¶|Ã¼|Ã±/ig, DMH_ReplaceSpecialChar);
 }
