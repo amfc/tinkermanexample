@@ -91,29 +91,13 @@ function Application() {
         if (value == this.lastSearch) {
             return;
         }
-        this.lastSearch = value;
-        if (this.searchTimer !== false) {
-            clearTimeout(this.searchTimer);
-            this.searchTimer = false;
-            if ((new Date() - this.searchStatedTypingTime) > 1000) {
-                obj.searchForCinemas();
-            }
-        } else {
-            this.searchStatedTypingTime = new Date();
-            document.getElementById('searchingSpan').style.visibility = 'visible';
+        if (this.searchingForCinemas) {
+            this.shouldSearchForCinemasAgain = true;
+            return;
         }
-        var obj = this;
-        this.searchTimer = setTimeout(
-            function()
-            {
-                if (obj.searchTimer !== false) {
-                    clearTimeout(obj.searchTimer);
-                    obj.searchTimer = false;
-                }
-                document.getElementById('searchingSpan').style.visibility = 'hidden';
-                obj.searchForCinemas();
-            }, 250
-        );
+        this.lastSearch = value;
+        document.getElementById('searchingSpan').style.visibility = 'visible';
+        this.searchForCinemas();
     }
     
     this.query = function(service, parameters, callback)
@@ -333,10 +317,17 @@ function Application() {
             }
             resultDiv.appendChild(cinemaDiv);
         }
+        this.searchingForCinemas = false;
+        document.getElementById('searchingSpan').style.visibility = 'hidden';
+        if (this.shouldSearchForCinemasAgain) {
+            this.shouldSearchForCinemasAgain = false;
+            this.searchForCinemas();
+        }
     }
     
     this.searchForCinemas = function(id)
     {
+        this.searchingForCinemas = true;
         var queryParameters = {};
         if (id) {
             queryParameters.id = id;
