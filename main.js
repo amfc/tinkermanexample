@@ -62,7 +62,7 @@ function Application() {
     this.onSearchRelatedClick = function(event)
     {
         if (this.parameters.movie) {
-            Application.searchForMovies({id: this.parameters.movie, getCinemas: 1, getBriefInfo: 1});
+            app.searchForMovies({id: this.parameters.movie, getCinemas: 1, getBriefInfo: 1});
         } else if (this.parameters.cinema) {
             app.searchForCinemas(this.parameters.cinema);
         }
