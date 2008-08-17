@@ -1,0 +1,125 @@
+* {
+    font-family: tahoma, sans serif;
+}
+a {
+    color: #33c;
+}
+body {
+    margin: 0;
+    margin-top: 3em;
+    background-image: url(images/background.gif);
+}
+.toolbar {
+    border-bottom: 1px solid black;
+    height: 1.7em;
+    padding-top: 0.3em;
+    padding-left: 0.2em;
+    font-size: 1em;
+    background-color: #eeff99;
+    margin-bottom: 20px;
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+#resultList {
+    width: 60%;
+    margin: 0.5em;
+}
+#resultList p {
+    margin-top: 0.1em;
+}
+.status {
+    color: #666;
+    font-size: 0.8em;
+}
+input {
+    border: 1px solid black;
+    padding: 1px;
+}
+div.result {
+    margin-bottom: 8px;
+    color: #444;
+}
+a.result {
+    font-weight: bold;
+}
+.detailsWindow {
+    border-top: 1px solid #7af;
+    border-left: 1px solid #7af;
+    border-bottom: 1px solid #7af;
+    margin-left: 3pt;
+    background-color: #f6f6ff;
+    padding: 10px;
+    padding-right: 14px;
+    position: fixed;
+    left: 61%;
+    top: 3.5em;
+    width: 37%;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-bottomleft: 10px;
+}
+.lastRecords {
+    padding: 1px;
+}
+.lastRecordsFieldset {
+    display: none;
+    border: 1px solid #7af;
+    background-color: #fcfcff;
+}
+.lastRecordsFieldset legend {
+    font-size: 11pt;
+}
+a.close {
+    text-decoration: none;
+    font-weight: bold;
+    color: #900;
+}
+div.title {
+    font-weight: bold;
+    margin-bottom: 5pt;
+    color: #b33;
+}
+div.title a {
+    font-weight: normal;
+    font-size: 1em;
+}
+#detailsDescription {
+    font-size: 0.95em;
+}
+#detailsDescription b {
+    color: #b33;
+}
+span.highlighted {
+    background-color: #99ff99;
+}
+.photo {
+    border: 1px solid #88f;
+}
+#logo {
+    float: right;
+    margin-top: -5px;
+}
+.photoWindow {
+    color: gray;
+    font-size: 9pt;
+    text-align: right;
+    margin-right: 5px;
+    float: left;
+}
+.photoWindow a {
+    color: #036;
+    text-decoration: none;
+}
+.photoWindow a:hover {
+    color: #04a;
+}
+.photoWindow a.disabled {
+    color: gray;
+    cursor: default;
+}
+.photoWindow a.disabled:hover {
+    color: gray;
+}
+.itemDetails {
+    color: gray
+}
