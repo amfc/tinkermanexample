@@ -3,10 +3,10 @@
 define('RAND_ID', 'get-cinema.php - ' . rand(1, 1000));
 define('DEBUG', 0);
 
-require_once('../comun/debug.php');
-require_once('../comun/js.php');
-require_once('../comun/db.php');
-require_once('../comun/sql.php');
+require_once('../includes/debug.php');
+require_once('../includes/js.php');
+require_once('../includes/db.php');
+require_once('../includes/sql.php');
 
 mysql_pconnect('localhost', 'root', '');
 mysql_select_db('adondevamos');
@@ -44,10 +44,6 @@ $select->addGroup('pelicula.id_pelicula');
 $select->addOrder('pelicula.op_pelicula');
 if (isset($_GET['id']) && $_GET['id']) {
     $select->addWhereFieldEquals('pelicula.id_pelicula', (int) $_GET['id']);
-}
-
-if (isset($_GET['new']) && $_GET['new']) {
-    $select->addWhere('pelicula.fecha_estreno>=(DATE_SUB(NOW(), INTERVAL 6 DAY))');
 }
 
 foreach (DB_GetAllAssocOrEnd($select->get()) as $pelicula) {

@@ -80,7 +80,7 @@ var Application = new function()
             this.linkCss('style.ie.css');
             window.onscroll = function(obj) { return function() { obj.onScrollForIe(false) } }(this);
         }
-        this.searchForMovies({'new': 1, getBriefInfo: 1});
+        this.searchForMovies({ getBriefInfo: 1});
     }
     
     this.searchTimer = false;

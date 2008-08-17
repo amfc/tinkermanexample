@@ -3,11 +3,10 @@
 define('RAND_ID', 'get-cinema.php - ' . rand(1, 1000));
 define('DEBUG', 0);
 
-require_once('../comun/debug.php');
-require_once('../comun/js.php');
-require_once('../comun/db.php');
-require_once('../comun/sql.php');
-require_once('../comun/files.php');
+require_once('../includes/debug.php');
+require_once('../includes/js.php');
+require_once('../includes/db.php');
+require_once('../includes/sql.php');
 
 mysql_pconnect('localhost', 'root', '');
 mysql_select_db('adondevamos');
