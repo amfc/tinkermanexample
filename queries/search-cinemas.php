@@ -16,7 +16,7 @@ $sql = 'SELECT cinema.id, cinema.name, cinema.info FROM cinema JOIN movie JOIN m
 if ($conditions) {
     $sql .= ' WHERE ' . implode(' AND ', $conditions);
 }
-$sql .= ' GROUP BY cinema.id ORDER BY cinema.name LIMIT 10';
+$sql .= ' GROUP BY cinema.id ORDER BY cinema.name LIMIT 4';
 foreach (DB_GetAllAssocOrEnd($sql) as $cinema) {
     $result = array(
         'id' => $cinema['id'],
