@@ -1,15 +1,6 @@
 <?
 
-define('RAND_ID', 'get-cinema.php - ' . rand(1, 1000));
-define('DEBUG', 0);
-
-require_once('../includes/debug.php');
-require_once('../includes/js.php');
-require_once('../includes/db.php');
-require_once('../includes/sql.php');
-
-mysql_pconnect('localhost', 'root', '');
-mysql_select_db('adondevamos');
+require_once('../start.php');
 
 function CutText($text, $length)
 {
@@ -23,49 +14,34 @@ function CutText($text, $length)
 }
 
 
-$resultados = array();
+$results = array();
 
-$select = new SQL_Select('pelicula');
+$sql = 'SELECT movie.id, movie.name';
 
-$select->addField('pelicula.id_pelicula');
-$select->addField('pelicula.op_pelicula');
-if (isset($_GET['getBriefInfo']) && $_GET['getBriefInfo']) {
-    $select->addField('pelicula.origen');
-    $select->addField('genero_cine.op_genero_cine');
-    $select->addField('condicion.op_condicion');
-    $select->addField('pelicula.comentario');
-    $select->addLeftJoin('genero_cine', 'genero_cine.id_genero_cine=pelicula.id_genero_cine');
-    $select->addLeftJoin('condicion', 'condicion.id_condicion=pelicula.id_condicion');
-}
-$select->addJoin('tl_cine_pelicula', 'tl_cine_pelicula.id_cine=cine.id_cine');
-$select->addJoin('cine', 'tl_cine_pelicula.id_pelicula=pelicula.id_pelicula');
-$select->addLimit(0, 10);
-$select->addGroup('pelicula.id_pelicula');
-$select->addOrder('pelicula.op_pelicula');
-if (isset($_GET['id']) && $_GET['id']) {
-    $select->addWhereFieldEquals('pelicula.id_pelicula', (int) $_GET['id']);
+if (!empty($_GET['getBriefInfo'])) {
+    $sql .= ', origin, genre, rating, movie.description';
 }
 
-foreach (DB_GetAllAssocOrEnd($select->get()) as $pelicula) {
-    $resultado = array(
-        'id' => $pelicula['id_pelicula'],
-        'name' => $pelicula['op_pelicula'],
-    );
-    if (isset($_GET['getCinemas']) && $_GET['getCinemas']) {
-        $resultado['cinemas'] = DB_GetAllAssocOrEnd('SELECT cine.id_cine AS id, cine.op_cine AS name, tl_cine_pelicula.horarios AS shows FROM cine, tl_cine_pelicula WHERE cine.id_cine=tl_cine_pelicula.id_cine && id_pelicula="' . (int) $pelicula['id_pelicula'] . '"');
+$sql .= ' FROM cinema JOIN movie JOIN movie_cinema ON (movie_cinema.cinema_id=cinema.id AND movie_cinema.movie_id=movie.id)';
+
+if (!empty($_GET['id'])) {
+    $sql .= ' WHERE movie.id=' . (int) $_GET['id'];
+}
+
+$sql .= ' GROUP BY movie.id ORDER BY movie.name LIMIT 10';
+
+foreach (DB_GetAllAssocOrEnd($sql) as $result) {
+    if (!empty($_GET['getCinemas'])) {
+        $result['cinemas'] = DB_GetAllAssocOrEnd('SELECT cinema.id, cinema.name, movie_cinema.shows FROM cinema, movie_cinema WHERE cinema.id=movie_cinema.cinema_id && movie_id="' . (int) $result['id'] . '"');
     }
-    if (isset($_GET['getBriefInfo']) && $_GET['getBriefInfo']) {
-        $resultado['origin'] = $pelicula['origen'];
-        $resultado['genre'] = $pelicula['op_genero_cine'];
-        $resultado['condition'] = $pelicula['op_condicion'];
-        $resultado['description'] = CutText(strip_tags($pelicula['comentario']), 200);
+    if (!empty($result['description'])) {
+        $result['description'] = CutText(strip_tags($result['description']), 200);
     }
-
-    $resultados[] = $resultado;
+    $results[] = $result;
 }
 
-header('Content-Type: text/plain; charset=iso-8859-1');
+header('Content-Type: text/javascript; charset=UTF-8');
 
-echo JS_GetObj($resultados);
+echo json_encode($results);
 
 ?>

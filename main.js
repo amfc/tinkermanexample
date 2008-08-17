@@ -256,7 +256,7 @@ var Application = new function()
                 infoItems.push(result[i].genre);
             }
             if (result[i].condition) {
-                infoItems.push(result[i].condition);
+                infoItems.push(result[i].rating);
             }
             if (result[i].origin) {
                 infoItems.push(result[i].origin);
@@ -316,11 +316,6 @@ var Application = new function()
             }
         }
         for (i = 0; i < result.length; i++) {
-            /* <div class="result">
-                <a href="#" class="result">Cinemark Palermo</a> Santa Fe 3395 10 "A"<br>
-                <a href="#" class="result-item">Memorias de una geisha</a> 14hs 15hs sábados trasnoche 23hs<br>
-                <a href="#" class="result-item">amet Lorem ipsum sit </a> 14hs 15hs sábados trasnoche<br>
-              </div> */
             cinemaDiv = document.createElement('div');
             cinemaDiv.className = 'result';
             a = Navigation.createLink({cinema: result[i].id});

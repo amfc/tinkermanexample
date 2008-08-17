@@ -1,53 +1,45 @@
 <?
 
-define('RAND_ID', 'get-cinema.php - ' . rand(1, 1000));
-define('DEBUG', 0);
+require_once('../start.php');
 
-require_once('../includes/debug.php');
-require_once('../includes/js.php');
-require_once('../includes/db.php');
-require_once('../includes/sql.php');
+$results = array();
 
-mysql_pconnect('localhost', 'root', '');
-mysql_select_db('adondevamos');
-
-$resultados = array();
-
-$select = new SQL_Select('cine');
-
-$select->addField('cine.id_cine');
-$select->addField('cine.op_cine');
-$select->addField('CONCAT(cine.direccion, " ", op_localidad) as direccion');
-$select->addLeftJoin('localidad', 'cine.id_localidad=localidad.id_localidad');
-$select->addJoin('tl_cine_pelicula', 'tl_cine_pelicula.id_cine=cine.id_cine');
-$select->addJoin('pelicula', 'tl_cine_pelicula.id_pelicula=pelicula.id_pelicula');
-$select->addLimit(0, 10);
-$select->addGroup('cine.id_cine');
-$select->addOrder('cine.op_cine');
+$conditions = array();
 
 if (isset($_GET['q'])) {
     foreach (preg_split('/\s+/m', trim($_GET['q'])) as $word) {
         $escaped_word = DB_EscapeLike($word);
-        $select->addWhere('cine.op_cine LIKE "%' . $escaped_word . '%" || pelicula.op_pelicula LIKE "%' . $escaped_word . '%" || cine.direccion LIKE "%' . $escaped_word .'%" || tl_cine_pelicula.horarios LIKE "%' . $escaped_word . '%" || localidad.op_localidad LIKE "%' . $escaped_word . '%"');
+        $conditions[] = '(cinema.name LIKE "%' . $escaped_word . '%" || movie.name LIKE "%' . $escaped_word . '%" || cinema.info LIKE "%' . $escaped_word .'%" || movie_cinema.shows LIKE "%' . $escaped_word . '%")';
     }
 }
 
 if (isset($_GET['id'])) {
-    $select->addWhereFieldEquals('cine.id_cine', (int) $_GET['id']);
+    $conditions[] = 'cinema.id=' . (int) $_GET['id'];
 }
 
-foreach (DB_GetAllAssocOrEnd($select->get()) as $cine) {
-    $resultado = array(
-        'id' => $cine['id_cine'],
-        'name' => $cine['op_cine'],
-        'address' => $cine['direccion'],
-        'movies' => DB_GetAllAssocOrEnd('SELECT pelicula.id_pelicula AS id, pelicula.op_pelicula AS name, tl_cine_pelicula.horarios AS shows FROM pelicula, tl_cine_pelicula WHERE pelicula.id_pelicula=tl_cine_pelicula.id_pelicula && id_cine="' . (int) $cine['id_cine'] . '"')
+
+$sql = 'SELECT cinema.id, cinema.name, cinema.info FROM cinema JOIN movie JOIN movie_cinema ON (movie_cinema.cinema_id=cinema.id AND movie_cinema.movie_id=movie.id)';
+
+
+if ($conditions) {
+    $sql .= ' WHERE ' . implode(' AND ', $conditions);
+}
+
+
+$sql .= ' GROUP BY cinema.id ORDER BY cinema.name LIMIT 10';
+
+foreach (DB_GetAllAssocOrEnd($sql) as $cinema) {
+    $result = array(
+        'id' => $cinema['id'],
+        'name' => $cinema['name'],
+        'address' => $cinema['info'],
+        'movies' => DB_GetAllAssocOrEnd('SELECT movie.id, movie.name, movie_cinema.shows FROM movie, movie_cinema WHERE movie.id=movie_cinema.movie_id && cinema_id="' . (int) $cinema['id'] . '"')
     );
-    $resultados[] = $resultado;
+    $results[] = $result;
 }
 
-header('Content-Type: text/plain; charset=iso-8859-1');
+header('Content-Type: text/javascript; charset=UTF-8');
 
-echo JS_GetObj($resultados);
+echo json_encode($results);
 
 ?>
