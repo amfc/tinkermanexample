@@ -1,6 +1,7 @@
 <?
 
 define('RAND_ID', 'get-cinema.php - ' . rand(1, 1000));
+define('DEBUG', 0);
 
 require_once('../comun/debug.php');
 require_once('../comun/js.php');

@@ -4,7 +4,6 @@ var Application = new function()
     this.maxLastRecords = 3;
     this.lastViewedItems = [];
     this.parameters = {};
-    this.viewingBigPhoto = false;
 
     this.linkJs = function(src)
     {
@@ -21,40 +20,6 @@ var Application = new function()
         link.setAttribute('rel', 'stylesheet');
         link.setAttribute('href', href);
         document.getElementsByTagName('head')[0].appendChild(link);
-    }
-    
-    // Correctly handle PNG transparency in Win IE 5.5 or higher.
-    // Originally from "http://homepage.ntlworld.com/bobosola. Updated 02-March-2004"
-    this.correctPNG = function(element) 
-    {
-        var img = element;
-        var imgName = img.src.toUpperCase();
-        var imgID = (img.id) ? "id='" + img.id + "' " : "";
-        var imgClass = (img.className) ? "class='" + img.className + "' " : "";
-        var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' ";
-        var imgStyle = "display:inline-block;" + img.style.cssText;
-        var strNewHTML = "<span class=\"float\" " + imgID + imgClass + imgTitle
-            + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
-            + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
-            + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>";
-        img.outerHTML = strNewHTML;
-    }
-    
-    this.togglePhoto = function(img, result)
-    {
-        var src = img.src;
-        var match = src.match(/^(.*)\/([^\/]+?)(_big)?\.([a-z]+)$/i);
-        if (match) {
-            if (match[3]) { // this is a big file, we will use a small one
-                img.src = match[1] + '/' + match[2] + '.' + match[4];
-                img.width = result.photoWidth;
-                img.height = result.photoHeight;
-            } else { // we will use a big one
-                img.src = match[1] + '/' + match[2] + '_big.' + match[4];
-                img.width = result.bigPhotoWidth;
-                img.height = result.bigPhotoHeight;
-            }
-        }
     }
     
     this.start = function()
@@ -113,7 +78,6 @@ var Application = new function()
         DOM_AddObjEventListener(this, document.getElementById('searchRelated'), 'click', this.onSearchRelatedClick);
         if (DOM_IsIE) {
             this.linkCss('style.ie.css');
-            this.correctPNG(document.getElementById('logo'));
             window.onscroll = function(obj) { return function() { obj.onScrollForIe(false) } }(this);
         }
         this.searchForMovies({'new': 1, getBriefInfo: 1});
@@ -242,7 +206,6 @@ var Application = new function()
     
     this.showCinema = function(result, parameters)
     {
-        this.loadPhotos();
         DOM_ReplaceText(document.getElementById('detailsName'), result.name);
         DOM_ReplaceText(document.getElementById('detailsDescription'), result.description);
         DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
@@ -261,92 +224,10 @@ var Application = new function()
         document.getElementById('detailsWindow').style.display = 'none';
     }
     
-    this.cyclePhoto = function()
-    {
-        if (this.selectedPhoto + 1 < this.photos.length) {
-            this.loadPhoto(this.selectedPhoto + 1);
-        } else {
-            this.loadPhoto(0);
-        }
-    }
-    
-    this.nextPhoto = function()
-    {
-        if (this.selectedPhoto + 1 < this.photos.length) {
-            this.loadPhoto(this.selectedPhoto + 1);
-        }
-    }
-    
-    this.previousPhoto = function()
-    {
-        if (this.selectedPhoto - 1 >= 0) {
-            this.loadPhoto(this.selectedPhoto - 1);
-        }
-    }
-    
-    this.enlargePhoto = function()
-    {
-        this.viewingBigPhoto = !this.viewingBigPhoto;
-        this.updateEnlargePhotoText();
-        this.loadPhoto(this.selectedPhoto);
-    }
-    
-    this.updateEnlargePhotoText = function()
-    {
-        var text;
-        if (this.viewingBigPhoto) {
-            text = '[ reducir ]';
-        } else {
-            text = '[ ampliar ]';
-        }
-        DOM_ReplaceText(document.getElementById('enlargePhoto'), text);
-    }
-    
-    this.loadPhoto = function(number)
-    {
-        this.selectedPhoto = number;
-        var img = document.getElementById('photo');
-        img.src = '/images/pixel.gif';
-        if (this.viewingBigPhoto) {
-            img.src = this.photoPath + this.photos[number].bigFile;
-            img.width = this.photos[number].bigWidth;
-            img.height = this.photos[number].bigHeight;
-        } else {
-            img.src = this.photoPath + this.photos[number].file;
-            img.width = this.photos[number].width;
-            img.height = this.photos[number].height;
-        }
-        
-        if (number > 0) {
-            document.getElementById('previousPhoto').className = '';
-        } else {
-            document.getElementById('previousPhoto').className = 'disabled';
-        }
-        if (this.photos.length > number + 1) {
-            document.getElementById('nextPhoto').className = '';
-        } else {
-            document.getElementById('nextPhoto').className = 'disabled';
-        }
-    }
-    
-    this.loadPhotos = function(photos, path)
-    {
-        this.photoPath = path;
-        this.photos = photos;
-        this.updateEnlargePhotoText();
-        if (!photos || !photos.length) {
-            document.getElementById('photoWindow').style.display = 'none';
-            return;
-        }
-        this.loadPhoto(0);
-        document.getElementById('photoWindow').style.display = '';
-    }
-    
     this.showMovie = function(result, parameters)
     {
         DOM_ReplaceText(document.getElementById('detailsName'), result.name);
         document.getElementById('detailsDescription').innerHTML = VAR_NlToBr(result.description);
-        this.loadPhotos(result.photos, 'http://www.adondevamos.com/fotos/pelicula/');
         DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
         DOM_ReplaceText(document.getElementById('searchRelated'), 'cines');
         document.getElementById('detailsWindow').style.display = '';

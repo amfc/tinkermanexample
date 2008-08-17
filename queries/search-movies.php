@@ -1,6 +1,7 @@
 <?
 
 define('RAND_ID', 'get-cinema.php - ' . rand(1, 1000));
+define('DEBUG', 0);
 
 require_once('../comun/debug.php');
 require_once('../comun/js.php');
@@ -17,7 +18,7 @@ function CutText($text, $length)
         $lastword = strrpos($tinytemp, " ");
         return substr($tinytemp, 0, $lastword) . "...";
     } else {
-        return $texto;
+        return $text;
     }
 }
 
@@ -36,8 +37,6 @@ if (isset($_GET['getBriefInfo']) && $_GET['getBriefInfo']) {
     $select->addLeftJoin('genero_cine', 'genero_cine.id_genero_cine=pelicula.id_genero_cine');
     $select->addLeftJoin('condicion', 'condicion.id_condicion=pelicula.id_condicion');
 }
-#$select->addField('CONCAT(pelicula.direccion, " ", op_localidad) as direccion');
-#$select->addLeftJoin('localidad', 'cine.id_localidad=localidad.id_localidad');
 $select->addJoin('tl_cine_pelicula', 'tl_cine_pelicula.id_cine=cine.id_cine');
 $select->addJoin('cine', 'tl_cine_pelicula.id_pelicula=pelicula.id_pelicula');
 $select->addLimit(0, 10);
@@ -68,8 +67,6 @@ foreach (DB_GetAllAssocOrEnd($select->get()) as $pelicula) {
 
     $resultados[] = $resultado;
 }
-
-
 
 header('Content-Type: text/plain; charset=iso-8859-1');
 

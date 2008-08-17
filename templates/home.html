@@ -1,4 +1,4 @@
-<div class="toolbar"><img src="/images/logo.png" id="logo">&nbsp;Buscar cines o películas: <input type="text" id="searchInput"> <span class="status" style="visibility: hidden" id="searchingSpan">buscando...</span> <a href="#">estrenos</a></div>
+<div class="toolbar">&nbsp;Buscar cines o películas: <input type="text" id="searchInput"> <span class="status" style="visibility: hidden" id="searchingSpan">buscando...</span></div>
 <fieldset class="lastRecordsFieldset">
 <legend>Visitas recientes</legend>
 <div class="lastRecords" id="lastRecords"></div>
@@ -6,13 +6,6 @@
 <div class="detailsWindow" id="detailsWindow" style="display: none">
   <div class="title"><span id="detailsName"></span> <a href="#" id="searchRelated">cines</a></div>
   <div class="info"><span id="detailsInfo"></span></div>
-  <div id="photoWindow" class="photoWindow" style="display: none">
-    <img id="photo" class="photo" src="/images/pixel.gif" onclick="Application.cyclePhoto();"><br>
-    <a href="#" style="float: left" id="enlargePhoto" onclick="Application.enlargePhoto(); return false;">[ ampliar ]</a>
-    <span id="photoNextAndPrevious">
-      <a href="#" class="disabled" id="previousPhoto" onclick="Application.previousPhoto(); return false;">&#x25c4;</a> más fotos <a href="#" id="nextPhoto" onclick="Application.nextPhoto(); return false;">&#x25ba;</a><br>
-    </span>
-  </div>
   <div id="detailsDescription"></div>
 </div>
 <div id="resultList"></div>

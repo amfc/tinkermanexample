@@ -20,6 +20,7 @@ body {
     position: fixed;
     top: 0;
     right: 0;
+    left: 0;
 }
 #resultList {
     width: 60%;
@@ -91,34 +92,6 @@ div.title a {
 }
 span.highlighted {
     background-color: #99ff99;
-}
-.photo {
-    border: 1px solid #88f;
-}
-#logo {
-    float: right;
-    margin-top: -5px;
-}
-.photoWindow {
-    color: gray;
-    font-size: 9pt;
-    text-align: right;
-    margin-right: 5px;
-    float: left;
-}
-.photoWindow a {
-    color: #036;
-    text-decoration: none;
-}
-.photoWindow a:hover {
-    color: #04a;
-}
-.photoWindow a.disabled {
-    color: gray;
-    cursor: default;
-}
-.photoWindow a.disabled:hover {
-    color: gray;
 }
 .itemDetails {
     color: gray
