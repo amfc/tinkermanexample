@@ -6,7 +6,6 @@ a {
 }
 body {
     margin: 0;
-    margin-top: 3em;
     background-image: url(images/background.gif);
 }
 .toolbar {
@@ -23,8 +22,9 @@ body {
     left: 0;
 }
 #resultList {
-    width: 60%;
     margin: 0.5em;
+    margin-top: 3em;
+    width: 60%;
 }
 #resultList p {
     margin-top: 0.1em;
