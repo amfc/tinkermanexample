@@ -208,7 +208,7 @@ function Application() {
         DOM_ReplaceText(document.getElementById('detailsName'), result.name);
         DOM_ReplaceText(document.getElementById('detailsDescription'), result.description);
         DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
-        DOM_ReplaceText(document.getElementById('searchRelated'), 'películas');
+        DOM_ReplaceText(document.getElementById('searchRelated'), 'pelÃ­culas');
         document.getElementById('detailsWindow').style.display = '';
         this.addLastViewedItem(result.name, 'cinema=' + parameters.id);
     }
