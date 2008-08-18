@@ -1,62 +1,10 @@
 function Application() {
-    this.lastRecordsCount = 0;
-    this.maxLastRecords = 3;
-    this.lastViewedItems = [];
     this.parameters = {};
 
-    this.linkJs = function(src)
-    {
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = src;
-        document.getElementsByTagName('head')[0].appendChild(script);
-    }
-    
-    this.linkCss = function(href)
-    {
-        var link = document.createElement('link');
-        link.setAttribute('type', 'text/css');
-        link.setAttribute('rel', 'stylesheet');
-        link.setAttribute('href', href);
-        document.getElementsByTagName('head')[0].appendChild(link);
-    }
-    
     this.start = function()
     {
         this.template = new Template;
         this.template.load('templates/home.html');
-    }
-    
-    this.updateDetailsWindowPositionForIe = function()
-    {
-        var y = DOM_GetScrollBarPositions().y;
-        if (y < 50) {
-            y = 50;
-        }
-        document.getElementById('detailsWindow').style.top = (y + 3) + 'px';
-    }
-    
-    this.onScrollForIe = function(fromTimer)
-    {
-        if (!fromTimer) {
-            this.scrollStartedTime = new Date();
-        }
-        if (this.scrollTimer) {
-            window.clearTimeout(this.scrollTimer);
-        }
-        if ((new Date() - this.scrollStartedTime) > 400) {
-            this.updateDetailsWindowPositionForIe();
-        } else {
-            this.scrollTimer = window.setTimeout(
-                function(obj)
-                {
-                    return function()
-                    {
-                        obj.onScrollForIe(true)
-                    }
-                }(this), 200
-            );
-        }
     }
     
     this.onSearchRelatedClick = function(event)
@@ -75,10 +23,6 @@ function Application() {
         this.template.replaceContents(document.getElementById('MainDiv'));
         DOM_AddObjEventListener(this, document.getElementById('searchInput'), 'keyup', this.onInputKeyup);
         DOM_AddObjEventListener(this, document.getElementById('searchRelated'), 'click', this.onSearchRelatedClick);
-        if (DOM_IsIE) {
-            this.linkCss('style.ie.css');
-            window.onscroll = function(obj) { return function() { obj.onScrollForIe(false) } }(this);
-        }
         this.searchForMovies({ getBriefInfo: 1});
     }
     
@@ -131,62 +75,6 @@ function Application() {
         request.send(null);
     }
     
-    this.addLastViewedItem = function(name, href)
-    {
-        var i;
-        var newLastViewedItems = [];
-        for (i = 0; i < this.lastViewedItems.length; ++i) {
-            if (this.lastRecordsCount < this.maxLastRecords || i > 0) {
-                newLastViewedItems[newLastViewedItems.length] = this.lastViewedItems[i];
-            }
-            if (this.lastViewedItems[i] == href) {
-                return;
-            }
-        }
-        this.lastViewedItems = newLastViewedItems;
-        this.lastViewedItems[this.lastViewedItems.length] = href;
-        var lastRecordsDiv = document.getElementById('lastRecords');
-        if (this.lastRecordsCount >= this.maxLastRecords) {
-            lastRecordsDiv.removeChild(lastRecordsDiv.firstChild);
-            --this.lastRecordsCount;
-        }
-        ++this.lastRecordsCount;
-        var div = document.createElement('div');
-        var a = document.createElement('a');
-        a.href = '#' + href;
-        a.appendChild(document.createTextNode(name));
-        a.onclick = function(href) {
-            return function(event)
-            {
-                if (!event) {
-                    event = window.event;
-                }
-                Navigation.goTo(href)
-                DOM_PreventDefault(event);
-            }
-        }(href);
-        div.appendChild(a);
-        div.appendChild(document.createTextNode(' '));
-        var closeLink = document.createElement('a');
-        closeLink.onclick = function(obj)
-        {
-            return function(event)
-            {
-                if (!event) {
-                    event = window.event;
-                }
-                lastRecordsDiv.removeChild(div);
-                --obj.lastRecordsCount;
-                DOM_PreventDefault(event);
-            }
-        }(this);
-        closeLink.href = '#';
-        closeLink.className = 'close';
-        closeLink.appendChild(document.createTextNode('x'));
-        div.appendChild(closeLink);
-        lastRecordsDiv.appendChild(div);
-    }
-    
     this.showCinema = function(result, parameters)
     {
         DOM_ReplaceText(document.getElementById('detailsName'), result.name);
@@ -194,7 +82,6 @@ function Application() {
         DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
         DOM_ReplaceText(document.getElementById('searchRelated'), 'películas');
         document.getElementById('detailsWindow').style.display = '';
-        this.addLastViewedItem(result.name, 'cinema=' + parameters.id);
     }
     
     this.openCinema = function(id)
@@ -214,7 +101,6 @@ function Application() {
         DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
         DOM_ReplaceText(document.getElementById('searchRelated'), 'cines');
         document.getElementById('detailsWindow').style.display = '';
-        this.addLastViewedItem(result.name, 'movie=' + parameters.id);
     }
     
     this.openMovie = function(id)

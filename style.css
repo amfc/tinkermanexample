@@ -1,5 +1,7 @@
 * {
     font-family: tahoma, sans serif;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 a {
     color: #33c;
@@ -10,21 +12,20 @@ body {
 }
 .toolbar {
     border-bottom: 1px solid black;
-    height: 1.7em;
+    height: 2em;
     padding-top: 0.3em;
     padding-left: 0.2em;
     font-size: 1em;
     background-color: #eeff99;
     margin-bottom: 20px;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
 }
 #resultList {
-    margin: 0.5em;
-    margin-top: 3em;
-    width: 60%;
+    position: absolute;
+    bottom: 0.3em;
+    top: 2.3em;
+    left: 1em;
+    right: 20em;
+    overflow: auto;
 }
 #resultList p {
     margin-top: 0.1em;
@@ -36,6 +37,7 @@ body {
 input {
     border: 1px solid black;
     padding: 1px;
+    width: 20em;
 }
 div.result {
     margin-bottom: 8px;
@@ -43,6 +45,14 @@ div.result {
 }
 a.result {
     font-weight: bold;
+}
+#detailsWindowContainer {
+    right: 0;
+    top: 2.3em;
+    width: 19.5em;
+    bottom: 0.3em;
+    position: absolute;
+    overflow: auto;
 }
 .detailsWindow {
     border-top: 1px solid #7af;
@@ -52,28 +62,8 @@ a.result {
     background-color: #f6f6ff;
     padding: 10px;
     padding-right: 14px;
-    position: fixed;
-    left: 61%;
-    top: 3.5em;
-    width: 37%;
     -moz-border-radius-topleft: 10px;
     -moz-border-radius-bottomleft: 10px;
-}
-.lastRecords {
-    padding: 1px;
-}
-.lastRecordsFieldset {
-    display: none;
-    border: 1px solid #7af;
-    background-color: #fcfcff;
-}
-.lastRecordsFieldset legend {
-    font-size: 11pt;
-}
-a.close {
-    text-decoration: none;
-    font-weight: bold;
-    color: #900;
 }
 div.title {
     font-weight: bold;
