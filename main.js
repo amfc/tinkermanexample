@@ -108,59 +108,12 @@ function Application() {
         this.query('get-movie', {id: id}, this.showMovie);
     }
     
-    this.showMovies = function(result, parameters)
+    this.showMovies = function(result)
     {
         var resultDiv = document.getElementById('resultList');
         DOM_RemoveAllChilds(resultDiv);
-        var i, j, cinemaDiv, a, p, span, infoItems, text;
-        for (i = 0; i < result.length; i++) {
-            cinemaDiv = document.createElement('div');
-            cinemaDiv.className = 'result';
-            a = Navigation.createLink({movie: result[i].id});
-            a.className = 'result';
-            a.appendChild(document.createTextNode(result[i].name));
-            cinemaDiv.appendChild(a);
-            infoItems = [];
-            if (result[i].genre) {
-                infoItems.push(result[i].genre);
-            }
-            if (result[i].condition) {
-                infoItems.push(result[i].rating);
-            }
-            if (result[i].origin) {
-                infoItems.push(result[i].origin);
-            }
-            if (infoItems.length) {
-                span = document.createElement('span');
-                span.className = 'itemDetails';
-                text = '';
-                for (j = 0; j < infoItems.length; ++j) {
-                    if (j > 0) {
-                        text += ' |';
-                    }
-                    text += ' ' + infoItems[j].toLowerCase();
-                }
-                span.appendChild(document.createTextNode(text));
-                cinemaDiv.appendChild(span);
-            }
-            cinemaDiv.appendChild(document.createElement('br'));
-            if (result[i].description) {
-                p = document.createElement('p');
-                p.appendChild(document.createTextNode(result[i].description));
-                cinemaDiv.appendChild(p);
-            }
-            if (result[i].cinemas) {
-                for (j = 0; j < result[i].cinemas.length; ++j) {
-                    a = Navigation.createLink({cinema: result[i].cinemas[j].id});
-                    a.className = 'result-item';
-                    a.appendChild(document.createTextNode(result[i].cinemas[j].name));
-                    cinemaDiv.appendChild(a);
-                    cinemaDiv.appendChild(document.createTextNode(' ' + result[i].cinemas[j].shows));
-                    cinemaDiv.appendChild(document.createElement('br'));
-                }
-            }
-            resultDiv.appendChild(cinemaDiv);
-        }
+        this.content = new ResultList(result, MovieResultItem);
+        resultDiv.appendChild(this.content.fragment);
     }
     
     this.searchForMovies = function(parameters)
@@ -224,7 +177,70 @@ function Application() {
     }
 }
 
-app = new Application;
+function ResultList(dataItems, itemConstructor) {
+    this.fragment = document.createDocumentFragment();
+    this.items = [];
+    for (var i = 0; i < dataItems.length; i++) {
+        var item = new itemConstructor(dataItems[i]);
+        this.items.push(item);
+        this.fragment.appendChild(item.fragment);
+    }
+}
+
+function SmallCinemaResultItem(result) {
+    this.fragment = document.createDocumentFragment();
+    var a = Navigation.createLink({cinema: result.id});
+    a.className = 'result-item';
+    a.appendChild(document.createTextNode(result.name));
+    this.fragment.appendChild(a);
+    this.fragment.appendChild(document.createTextNode(' ' + result.shows));
+    this.fragment.appendChild(document.createElement('br'));
+}
+
+function MovieResultItem(result) {
+    this.fragment = document.createDocumentFragment();
+    var cinemaDiv = document.createElement('div');
+    cinemaDiv.className = 'result';
+    var a = Navigation.createLink({movie: result.id});
+    a.className = 'result';
+    a.appendChild(document.createTextNode(result.name));
+    cinemaDiv.appendChild(a);
+    var infoItems = [];
+    if (result.genre) {
+        infoItems.push(result.genre);
+    }
+    if (result.condition) {
+        infoItems.push(result.rating);
+    }
+    if (result.origin) {
+        infoItems.push(result.origin);
+    }
+    if (infoItems.length) {
+        span = document.createElement('span');
+        span.className = 'itemDetails';
+        var text = '';
+        for (var j = 0; j < infoItems.length; ++j) {
+            if (j > 0) {
+                text += ' |';
+            }
+            text += ' ' + infoItems[j].toLowerCase();
+        }
+        span.appendChild(document.createTextNode(text));
+        cinemaDiv.appendChild(span);
+    }
+    cinemaDiv.appendChild(document.createElement('br'));
+    if (result.description) {
+        p = document.createElement('p');
+        p.appendChild(document.createTextNode(result.description));
+        cinemaDiv.appendChild(p);
+    }
+    if (result.cinemas) {
+        cinemaDiv.appendChild(new ResultList(result.cinemas, SmallCinemaResultItem).fragment);
+    }
+    this.fragment.appendChild(cinemaDiv);
+}
+
+var app = new Application;
 
 app.start();
 
