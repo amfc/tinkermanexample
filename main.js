@@ -26,7 +26,6 @@ function Application() {
         this.searchForMovies({ getBriefInfo: 1});
     }
     
-    this.searchTimer = false;
     this.lastSearch = '';
     
     this.onInputKeyup = function()
@@ -44,37 +43,6 @@ function Application() {
         this.searchForCinemas();
     }
     
-    this.query = function(service, parameters, callback)
-    {
-        var e, request;
-        
-        /*@cc_on 
-        @if (@_jscript_version >= 5) 
-            try { request = new ActiveXObject("Msxml2.XMLHTTP"); } 
-            catch (e) { 
-                try { request = new ActiveXObject("Microsoft.XMLHTTP"); } 
-                catch (e) {  } } 
-        @end @*/  
-        if (!request) {
-            request = new XMLHttpRequest();
-        }
-        
-        request.onreadystatechange = function(obj) {
-            return function() {
-                if (request.readyState == 4) {
-                    if (request.status == 200) {
-                        callback.call(obj, eval('(' + request.responseText + ')'), parameters);
-                    } else {
-                        throw "XMLHttpRequest error:\n" + request.statusText;
-                    }
-                }
-            }
-        }(this);
-        
-        request.open("GET", 'queries/' + service + '.php?' + Navigation.serializeParametersToString(parameters), true);
-        request.send(null);
-    }
-    
     this.showCinema = function(result, parameters)
     {
         DOM_ReplaceText(document.getElementById('detailsName'), result.name);
@@ -86,7 +54,7 @@ function Application() {
     
     this.openCinema = function(id)
     {
-        this.query('get-cinema', {id: id}, this.showCinema);
+        query('get-cinema', {id: id}, this, this.showCinema);
     }
     
     this.closeWindow = function()
@@ -105,7 +73,7 @@ function Application() {
     
     this.openMovie = function(id)
     {
-        this.query('get-movie', {id: id}, this.showMovie);
+        query('get-movie', {id: id}, this, this.showMovie);
     }
     
     this.showMovies = function(result)
@@ -118,7 +86,7 @@ function Application() {
     
     this.searchForMovies = function(parameters)
     {
-        this.query('search-movies', parameters, this.showMovies);
+        query('search-movies', parameters, this, this.showMovies);
     }
     
     this.showCinemas = function(result, parameters)
@@ -173,8 +141,37 @@ function Application() {
         } else {
             queryParameters.q = document.getElementById('searchInput').value;
         }
-        this.query('search-cinemas', queryParameters, this.showCinemas);
+        query('search-cinemas', queryParameters, this, this.showCinemas);
     }
+}
+
+function query(service, parameters, obj, callback) {
+    var e, request;
+    
+    /*@cc_on 
+    @if (@_jscript_version >= 5) 
+        try { request = new ActiveXObject("Msxml2.XMLHTTP"); } 
+        catch (e) { 
+            try { request = new ActiveXObject("Microsoft.XMLHTTP"); } 
+            catch (e) {  } } 
+    @end @*/  
+    if (!request) {
+        request = new XMLHttpRequest();
+    }
+    
+    request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+            if (request.status == 200) {
+                callback.call(obj, eval('(' + request.responseText + ')'), parameters);
+            } else {
+                throw "XMLHttpRequest error:\n" + request.statusText;
+            }
+        }
+    };
+    
+    request.open("GET", 'queries/' + service + '.php?' + Navigation.serializeParametersToString(parameters), true);
+    request.send(null);
+    
 }
 
 function ResultList(dataItems, itemConstructor) {
