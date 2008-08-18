@@ -4,7 +4,7 @@ require_once('../start.php');
 $results = array();
 $conditions = array();
 if (isset($_GET['q'])) {
-    foreach (preg_split('/\s+/m', trim($_GET['q'])) as $word) {
+    foreach (preg_split('/\s+/m', trim(utf8_encode($_GET['q']))) as $word) {
         $escaped_word = DB_EscapeLike($word);
         $conditions[] = '(cinema.name LIKE "%' . $escaped_word . '%" || movie.name LIKE "%' . $escaped_word . '%" || cinema.info LIKE "%' . $escaped_word .'%" || movie_cinema.shows LIKE "%' . $escaped_word . '%")';
     }
