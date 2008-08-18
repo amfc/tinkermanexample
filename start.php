@@ -17,6 +17,7 @@ function DB_QueryOrEnd($query, $message = 'Database error')
 {
     $res = mysql_query($query);
     if (!$res) {
+        error_log(mysql_error());
         die($message);
     }
     return $res;
