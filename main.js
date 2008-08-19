@@ -76,60 +76,34 @@ function Application() {
         query('get-movie', {id: id}, this, this.showMovie);
     }
     
-    this.showMovies = function(result)
-    {
-        var resultDiv = document.getElementById('resultList');
-        DOM_RemoveAllChilds(resultDiv);
-        this.content = new ResultList(result, MovieResultItem);
-        resultDiv.appendChild(this.content.fragment);
-    }
-    
     this.searchForMovies = function(parameters)
     {
         query('search-movies', parameters, this, this.showMovies);
     }
     
-    this.showCinemas = function(result, parameters)
+    this.showSearchResults = function(result, parameters, resultItemConstructor)
     {
+        var highlighter = new Highlighter(parameters.q);
         var resultDiv = document.getElementById('resultList');
         DOM_RemoveAllChilds(resultDiv);
-        var i, j, cinemaDiv, a;
-        if (parameters.q) {
-            var unsorted_words = VAR_SplitWords(parameters.q);
-            var sorted_words = DMH_SortByStringLength(unsorted_words);
-        }
-        function getText(str) {
-            if (parameters.q) {
-                return DMH_CreateHighlightedText(str, unsorted_words, sorted_words);
-            } else {
-                return document.createTextNode(str);
-            }
-        }
-        for (i = 0; i < result.length; i++) {
-            cinemaDiv = document.createElement('div');
-            cinemaDiv.className = 'result';
-            a = Navigation.createLink({cinema: result[i].id});
-            a.className = 'result';
-            a.appendChild(getText(result[i].name));
-            cinemaDiv.appendChild(a);
-            cinemaDiv.appendChild(getText(' ' + result[i].address));
-            cinemaDiv.appendChild(document.createElement('br'));
-            for (j = 0; j < result[i].movies.length; j++) {
-                a = Navigation.createLink({movie: result[i].movies[j].id});
-                a.className = 'result-item';
-                a.appendChild(getText(result[i].movies[j].name));
-                cinemaDiv.appendChild(a);
-                cinemaDiv.appendChild(getText(' ' + result[i].movies[j].shows));
-                cinemaDiv.appendChild(document.createElement('br'));
-            }
-            resultDiv.appendChild(cinemaDiv);
-        }
+        this.resultList = new ResultList(result, resultItemConstructor, highlighter);
+        resultDiv.appendChild(this.resultList.fragment);
+    }
+    
+    this.showCinemas = function(result, parameters)
+    {
+        this.showSearchResults(result, parameters, CinemaResultItem);
         this.searchingForCinemas = false;
         document.getElementById('searchingSpan').style.visibility = 'hidden';
         if (this.shouldSearchForCinemasAgain) {
             this.shouldSearchForCinemasAgain = false;
             this.searchForCinemas();
         }
+    }
+    
+    this.showMovies = function(result, parameters)
+    {
+        this.showSearchResults(result, parameters, MovieResultItem);
     }
     
     this.searchForCinemas = function(id)
@@ -174,34 +148,70 @@ function query(service, parameters, obj, callback) {
     
 }
 
-function ResultList(dataItems, itemConstructor) {
+function CinemaResultItem(result, highlighter) {
+    this.fragment = document.createDocumentFragment();
+    var div = document.createElement('div');
+    div.className = 'result';
+    var a = Navigation.createLink({cinema: result.id});
+    a.className = 'result';
+    a.appendChild(highlighter.getText(result.name));
+    div.appendChild(a);
+    div.appendChild(highlighter.getText(' ' + result.address));
+    div.appendChild(document.createElement('br'));
+    if (result.movies) {
+        div.appendChild(new ResultList(result.movies, ShowsResultItem, highlighter).fragment);
+    }
+    this.fragment.appendChild(div);
+}
+
+function Highlighter(q) {
+    if (q) {
+        var unsorted_words = VAR_SplitWords(q);
+        var sorted_words = DMH_SortByStringLength(unsorted_words);
+    }
+    this.getText = function(str) {
+        if (q) {
+            return DMH_CreateHighlightedText(str, unsorted_words, sorted_words);
+        } else {
+            return document.createTextNode(str);
+        }
+    }
+}
+
+function ResultList(dataItems, itemConstructor, highlighter) {
     this.fragment = document.createDocumentFragment();
     this.items = [];
     for (var i = 0; i < dataItems.length; i++) {
-        var item = new itemConstructor(dataItems[i]);
+        var item = new itemConstructor(dataItems[i], highlighter);
         this.items.push(item);
         this.fragment.appendChild(item.fragment);
     }
 }
 
-function SmallCinemaResultItem(result) {
+function ShowsResultItem(result, highlighter) {
+    function getLink() {
+        var params = {};
+        params[result.type] = result.id;
+        return Navigation.createLink(params);
+    }
     this.fragment = document.createDocumentFragment();
-    var a = Navigation.createLink({cinema: result.id});
+    var a = getLink();
     a.className = 'result-item';
-    a.appendChild(document.createTextNode(result.name));
+    a.appendChild(highlighter.getText(result.name));
     this.fragment.appendChild(a);
-    this.fragment.appendChild(document.createTextNode(' ' + result.shows));
+    this.fragment.appendChild(document.createTextNode(' '));
+    this.fragment.appendChild(highlighter.getText(result.shows));
     this.fragment.appendChild(document.createElement('br'));
 }
 
-function MovieResultItem(result) {
+function MovieResultItem(result, highlighter) {
     this.fragment = document.createDocumentFragment();
-    var cinemaDiv = document.createElement('div');
-    cinemaDiv.className = 'result';
+    var div = document.createElement('div');
+    div.className = 'result';
     var a = Navigation.createLink({movie: result.id});
     a.className = 'result';
     a.appendChild(document.createTextNode(result.name));
-    cinemaDiv.appendChild(a);
+    div.appendChild(a);
     var infoItems = [];
     if (result.genre) {
         infoItems.push(result.genre);
@@ -213,7 +223,7 @@ function MovieResultItem(result) {
         infoItems.push(result.origin);
     }
     if (infoItems.length) {
-        span = document.createElement('span');
+        var span = document.createElement('span');
         span.className = 'itemDetails';
         var text = '';
         for (var j = 0; j < infoItems.length; ++j) {
@@ -223,18 +233,18 @@ function MovieResultItem(result) {
             text += ' ' + infoItems[j].toLowerCase();
         }
         span.appendChild(document.createTextNode(text));
-        cinemaDiv.appendChild(span);
+        div.appendChild(span);
     }
-    cinemaDiv.appendChild(document.createElement('br'));
+    div.appendChild(document.createElement('br'));
     if (result.description) {
-        p = document.createElement('p');
+        var p = document.createElement('p');
         p.appendChild(document.createTextNode(result.description));
-        cinemaDiv.appendChild(p);
+        div.appendChild(p);
     }
     if (result.cinemas) {
-        cinemaDiv.appendChild(new ResultList(result.cinemas, SmallCinemaResultItem).fragment);
+        div.appendChild(new ResultList(result.cinemas, ShowsResultItem, highlighter).fragment);
     }
-    this.fragment.appendChild(cinemaDiv);
+    this.fragment.appendChild(div);
 }
 
 var app = new Application;

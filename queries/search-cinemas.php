@@ -22,7 +22,7 @@ foreach (DB_GetAllAssocOrEnd($sql) as $cinema) {
         'id' => $cinema['id'],
         'name' => $cinema['name'],
         'address' => $cinema['info'],
-        'movies' => DB_GetAllAssocOrEnd('SELECT movie.id, movie.name, movie_cinema.shows FROM movie, movie_cinema WHERE movie.id=movie_cinema.movie_id && cinema_id="' . (int) $cinema['id'] . '"')
+        'movies' => DB_GetAllAssocOrEnd('SELECT movie.id, movie.name, movie_cinema.shows, "movie" AS type FROM movie, movie_cinema WHERE movie.id=movie_cinema.movie_id && cinema_id="' . (int) $cinema['id'] . '"')
     );
     $results[] = $result;
 }

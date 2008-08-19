@@ -23,7 +23,7 @@ if (!empty($_GET['id'])) {
 $sql .= ' GROUP BY movie.id ORDER BY movie.name LIMIT 10';
 foreach (DB_GetAllAssocOrEnd($sql) as $result) {
     if (!empty($_GET['getCinemas'])) {
-        $result['cinemas'] = DB_GetAllAssocOrEnd('SELECT cinema.id, cinema.name, movie_cinema.shows FROM cinema, movie_cinema WHERE cinema.id=movie_cinema.cinema_id && movie_id="' . (int) $result['id'] . '"');
+        $result['cinemas'] = DB_GetAllAssocOrEnd('SELECT cinema.id, cinema.name, movie_cinema.shows, "cinema" AS type FROM cinema, movie_cinema WHERE cinema.id=movie_cinema.cinema_id && movie_id="' . (int) $result['id'] . '"');
     }
     if (!empty($result['description'])) {
         $result['description'] = CutText(strip_tags($result['description']), 200);
