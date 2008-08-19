@@ -15,7 +15,9 @@ function query(service, parameters, obj, callback) {
     request.onreadystatechange = function() {
         if (request.readyState == 4) {
             if (request.status == 200) {
-                callback.call(obj, eval('(' + request.responseText + ')'), parameters);
+                var response = eval('(' + request.responseText + ')');
+                callback.call(obj, response, parameters);
+                Log(response, service + ' response', 'query');
             } else {
                 throw "XMLHttpRequest error:\n" + request.statusText;
             }
@@ -24,5 +26,5 @@ function query(service, parameters, obj, callback) {
     
     request.open("GET", 'queries/' + service + '.php?' + navigation.serializeParametersToString(parameters), true);
     request.send(null);
-    
+    Log(parameters, service, 'query');
 }
