@@ -20,7 +20,6 @@ function Application() {
     
     this.load = function()
     {
-        this.template.assign('');
         this.template.replaceContents(document.getElementById('MainDiv'));
         DOM_AddObjEventListener(this, document.getElementById('searchInput'), 'keyup', this.onInputKeyup);
         DOM_AddObjEventListener(this, document.getElementById('searchRelated'), 'click', this.onSearchRelatedClick);
