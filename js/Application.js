@@ -67,7 +67,7 @@ function Application() {
     {
         var highlighter = new Highlighter(parameters.q);
         var resultDiv = document.getElementById('resultList');
-        DOM_RemoveAllChilds(resultDiv);
+        DOM_RemoveAllChildren(resultDiv);
         this.resultList = new ResultList(result, resultItemConstructor, highlighter);
         resultDiv.appendChild(this.resultList.fragment);
     }
