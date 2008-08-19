@@ -6,17 +6,17 @@ function Template()
 
 Template.prototype.load = function(url, name, async)
 {
-	var e, request;
-	/*@cc_on 
-	@if (@_jscript_version >= 5) 
-		try { request = new ActiveXObject("Msxml2.XMLHTTP"); } 
-		catch (e) { 
-			try { request = new ActiveXObject("Microsoft.XMLHTTP"); } 
-			catch (e) {  } } 
-	@end @*/  
+    var e, request;
+    /*@cc_on 
+    @if (@_jscript_version >= 5) 
+        try { request = new ActiveXObject("Msxml2.XMLHTTP"); } 
+        catch (e) { 
+            try { request = new ActiveXObject("Microsoft.XMLHTTP"); } 
+            catch (e) {  } } 
+    @end @*/  
     if (!request) {
-		request = new XMLHttpRequest();
-	}
+        request = new XMLHttpRequest();
+    }
     if (typeof async == 'undefined') {
         async = false;
     }
