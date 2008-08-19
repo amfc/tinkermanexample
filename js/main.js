@@ -1,6 +1,6 @@
 var app = new Application;
 
-Navigation.updatePage = function(parametersObj)
+navigation.updatePage = function(parametersObj)
 {
     app.parameters = parametersObj;
     if (parametersObj['movie']) {
@@ -10,6 +10,7 @@ Navigation.updatePage = function(parametersObj)
     } else {
         app.closeWindow();
     }
+    Log(parametersObj, null, 'urlChange');
 }
 
-app.start();
+LOG.logAsSection('app', app, 'app');

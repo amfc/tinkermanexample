@@ -1,26 +1,24 @@
 function CinemaResultItem(result, highlighter) {
-    this.fragment = document.createDocumentFragment();
-    var div = document.createElement('div');
-    div.className = 'result';
-    var a = Navigation.createLink({cinema: result.id});
+    this.domNode = document.createElement('div');
+    this.domNode.className = 'result';
+    var a = navigation.createLink({cinema: result.id});
     a.className = 'result';
     a.appendChild(highlighter.getText(result.name));
-    div.appendChild(a);
-    div.appendChild(highlighter.getText(' ' + result.address));
-    div.appendChild(document.createElement('br'));
+    this.domNode.appendChild(a);
+    this.domNode.appendChild(highlighter.getText(' ' + result.address));
+    this.domNode.appendChild(document.createElement('br'));
     if (result.movies) {
-        div.appendChild(new ResultList(result.movies, ShowsResultItem, highlighter).fragment);
+        this.domNode.appendChild(new ResultList(result.movies, ShowsResultItem, highlighter).domNode);
     }
-    this.fragment.appendChild(div);
 }
 
 function ResultList(dataItems, itemConstructor, highlighter) {
-    this.fragment = document.createDocumentFragment();
+    this.domNode = document.createElement('div');
     this.items = [];
     for (var i = 0; i < dataItems.length; i++) {
         var item = new itemConstructor(dataItems[i], highlighter);
         this.items.push(item);
-        this.fragment.appendChild(item.fragment);
+        this.domNode.appendChild(item.domNode);
     }
 }
 
@@ -28,26 +26,25 @@ function ShowsResultItem(result, highlighter) {
     function getLink() {
         var params = {};
         params[result.type] = result.id;
-        return Navigation.createLink(params);
+        return navigation.createLink(params);
     }
-    this.fragment = document.createDocumentFragment();
+    this.domNode = document.createElement('span');
     var a = getLink();
     a.className = 'result-item';
     a.appendChild(highlighter.getText(result.name));
-    this.fragment.appendChild(a);
-    this.fragment.appendChild(document.createTextNode(' '));
-    this.fragment.appendChild(highlighter.getText(result.shows));
-    this.fragment.appendChild(document.createElement('br'));
+    this.domNode.appendChild(a);
+    this.domNode.appendChild(document.createTextNode(' '));
+    this.domNode.appendChild(highlighter.getText(result.shows));
+    this.domNode.appendChild(document.createElement('br'));
 }
 
 function MovieResultItem(result, highlighter) {
-    this.fragment = document.createDocumentFragment();
-    var div = document.createElement('div');
-    div.className = 'result';
-    var a = Navigation.createLink({movie: result.id});
+    this.domNode = document.createElement('div');
+    this.domNode.className = 'result';
+    var a = navigation.createLink({movie: result.id});
     a.className = 'result';
     a.appendChild(document.createTextNode(result.name));
-    div.appendChild(a);
+    this.domNode.appendChild(a);
     var infoItems = [];
     if (result.genre) {
         infoItems.push(result.genre);
@@ -69,17 +66,16 @@ function MovieResultItem(result, highlighter) {
             text += ' ' + infoItems[j].toLowerCase();
         }
         span.appendChild(document.createTextNode(text));
-        div.appendChild(span);
+        this.domNode.appendChild(span);
     }
-    div.appendChild(document.createElement('br'));
+    this.domNode.appendChild(document.createElement('br'));
     if (result.description) {
         var p = document.createElement('p');
         p.appendChild(document.createTextNode(result.description));
-        div.appendChild(p);
+        this.domNode.appendChild(p);
     }
     if (result.cinemas) {
-        div.appendChild(new ResultList(result.cinemas, ShowsResultItem, highlighter).fragment);
+        this.domNode.appendChild(new ResultList(result.cinemas, ShowsResultItem, highlighter).domNode);
     }
-    this.fragment.appendChild(div);
 }
 

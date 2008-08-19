@@ -1,15 +1,8 @@
 function Application() {
     this.parameters = {};
 
-    this.start = function()
-    {
-        this.template = new Template;
-        this.template.load('templates/home.html');
-    }
-    
     this.load = function()
     {
-        this.template.replaceContents(document.getElementById('MainDiv'));
         DOM_AddObjEventListener(this, document.getElementById('searchInput'), 'keyup', this.onInputKeyup);
         this.searchForMovies({ getBriefInfo: 1});
         this.detailWindow = new DetailWindow;
@@ -69,7 +62,7 @@ function Application() {
         var resultDiv = document.getElementById('resultList');
         DOM_RemoveAllChildren(resultDiv);
         this.resultList = new ResultList(result, resultItemConstructor, highlighter);
-        resultDiv.appendChild(this.resultList.fragment);
+        resultDiv.appendChild(this.resultList.domNode);
     }
     
     this.showCinemas = function(result, parameters)

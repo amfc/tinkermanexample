@@ -22,7 +22,7 @@ function query(service, parameters, obj, callback) {
         }
     };
     
-    request.open("GET", 'queries/' + service + '.php?' + Navigation.serializeParametersToString(parameters), true);
+    request.open("GET", 'queries/' + service + '.php?' + navigation.serializeParametersToString(parameters), true);
     request.send(null);
     
 }

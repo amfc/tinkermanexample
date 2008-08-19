@@ -1,7 +1,7 @@
 // Navigation
 // version 1.1
 
-Navigation = new function()
+function Navigation()
 {
     this.documentLoaded = false;
     this.futureQueryStrings = [];
@@ -134,12 +134,13 @@ Navigation = new function()
             setTimeout(
                 function()
                 {
-                    Navigation.newPageArrived(queryString);
+                    me.newPageArrived(queryString);
                 },
                 100
             )
             return;
         }
+        var me = this;
         var match;
         var parametersObj = {};
         if (this.pageIsLoading(queryString)) {
@@ -172,9 +173,11 @@ Navigation = new function()
         }
         this.newPageArrived(queryString);
     }
-}()
+}
 
-DOM_AddObjEventListener(Navigation, window, 'load', Navigation.onWindowLoad);
+var navigation = new Navigation;
+
+DOM_AddObjEventListener(navigation, window, 'load', navigation.onWindowLoad);
 if (DOM_IsGecko) {
-    setInterval(function() { Navigation.checkForUrlChanges() }, 200);
+    setInterval(function() { navigation.checkForUrlChanges() }, 200);
 }
