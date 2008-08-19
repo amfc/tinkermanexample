@@ -5,6 +5,7 @@ function Application() {
     {
         this.template = new Template;
         this.template.load('templates/home.html');
+        this.detailWindow = new DetailWindow;
     }
     
     this.onSearchRelatedClick = function(event)
@@ -45,11 +46,7 @@ function Application() {
     
     this.showCinema = function(result, parameters)
     {
-        DOM_ReplaceText(document.getElementById('detailsName'), result.name);
-        DOM_ReplaceText(document.getElementById('detailsDescription'), result.description);
-        DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
-        DOM_ReplaceText(document.getElementById('searchRelated'), 'películas');
-        document.getElementById('detailsWindow').style.display = '';
+        this.detailWindow.setResult(result);
     }
     
     this.openCinema = function(id)
@@ -64,11 +61,7 @@ function Application() {
     
     this.showMovie = function(result, parameters)
     {
-        DOM_ReplaceText(document.getElementById('detailsName'), result.name);
-        document.getElementById('detailsDescription').innerHTML = VAR_NlToBr(result.description);
-        DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
-        DOM_ReplaceText(document.getElementById('searchRelated'), 'cines');
-        document.getElementById('detailsWindow').style.display = '';
+        this.detailWindow.setResult(result);
     }
     
     this.openMovie = function(id)
@@ -109,13 +102,13 @@ function Application() {
     this.searchForCinemas = function(id)
     {
         this.searchingForCinemas = true;
-        var queryParameters = {};
+        var params = {};
         if (id) {
-            queryParameters.id = id;
+            params.id = id;
         } else {
-            queryParameters.q = document.getElementById('searchInput').value;
+            params.q = document.getElementById('searchInput').value;
         }
-        query('search-cinemas', queryParameters, this, this.showCinemas);
+        query('search-cinemas', params, this, this.showCinemas);
     }
 }
 
@@ -245,6 +238,19 @@ function MovieResultItem(result, highlighter) {
         div.appendChild(new ResultList(result.cinemas, ShowsResultItem, highlighter).fragment);
     }
     this.fragment.appendChild(div);
+}
+
+function DetailWindow() {
+}
+
+DetailWindow.prototype.setResult = function(result) {
+    if (result) {
+        DOM_ReplaceText(document.getElementById('detailsName'), result.name);
+        document.getElementById('detailsDescription').innerHTML = VAR_NlToBr(result.description);
+        DOM_ReplaceText(document.getElementById('detailsInfo'), result.info);
+        DOM_ReplaceText(document.getElementById('searchRelated'), result.linkName);
+    }
+    document.getElementById('detailsWindow').style.display = result ? '' : 'none';
 }
 
 var app = new Application;
