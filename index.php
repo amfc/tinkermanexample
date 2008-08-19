@@ -5,8 +5,11 @@
 <title>cines o películas</title>
 <link type="text/css" rel="StyleSheet" href="style.css">
 <script type="text/javascript" src="/js/dom.js"></script>
-<script type="text/javascript" src="/js/variables.js"></script>
-<script type="text/javascript" src="/js/dom_highlight.js"></script>
+<script type="text/javascript" src="/js/Application.js"></script>
+<script type="text/javascript" src="/js/query.js"></script>
+<script type="text/javascript" src="/js/Highlighter.js"></script>
+<script type="text/javascript" src="/js/resultItems.js"></script>
+<script type="text/javascript" src="/js/DetailWindow.js"></script>
 <script type="text/javascript" src="navigation.js"></script>
 <script type="text/javascript" src="template.js"></script>
 <script type="text/javascript" src="main.js"></script>

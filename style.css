@@ -11,12 +11,13 @@ body {
     background-image: url(images/background.gif);
 }
 .toolbar {
-    border-bottom: 1px solid black;
-    height: 2em;
+    border-bottom: 1px solid green;
+    height: 2.1em;
     padding-top: 0.3em;
     padding-left: 0.2em;
     font-size: 1em;
-    background-color: #eeff99;
+    background-color: rgb(140, 220, 140);
+    background-color: rgba(55, 190, 55, 0.5);
     margin-bottom: 20px;
 }
 #resultList {
@@ -55,11 +56,12 @@ a.result {
     overflow: auto;
 }
 .detailsWindow {
-    border-top: 1px solid #7af;
-    border-left: 1px solid #7af;
-    border-bottom: 1px solid #7af;
+    border-top: 1px solid orange;
+    border-left: 1px solid orange;
+    border-bottom: 1px solid orange;
     margin-left: 3pt;
-    background-color: #f6f6ff;
+    background-color: rgb(255, 252, 234);
+    background-color: rgba(255, 247, 220, 0.6);
     padding: 10px;
     padding-right: 14px;
     -moz-border-radius-topleft: 10px;

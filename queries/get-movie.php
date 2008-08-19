@@ -7,7 +7,7 @@ if (!isset($_GET['id'])) {
 header('Content-Type: text/javascript; charset=UTF-8');
 echo json_encode(
     DB_GetOneAssocOrEnd(
-        'SELECT name, description, info, "cines" AS linkName FROM movie WHERE id=' . (int) $_GET['id']
+        'SELECT name, description, info, "cines" AS linkName, "movie" AS type FROM movie WHERE id=' . (int) $_GET['id']
     )
 );
 
