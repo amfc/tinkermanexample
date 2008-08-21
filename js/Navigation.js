@@ -1,6 +1,3 @@
-// Navigation
-// version 1.1
-
 function Navigation()
 {
     this.documentLoaded = false;
@@ -130,6 +127,7 @@ function Navigation()
     
     this.newPageArrived = function(queryString)
     {
+        var me = this;
         if (!this.documentLoaded) {
             setTimeout(
                 function()
@@ -140,7 +138,6 @@ function Navigation()
             )
             return;
         }
-        var me = this;
         var match;
         var parametersObj = {};
         if (this.pageIsLoading(queryString)) {
